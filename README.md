@@ -22,13 +22,17 @@ This Flutter Todo application demonstrates a modern, modular approach to mobile 
 
 ## 🛠️ Technologies and Libraries used
 
-- 📡 **Dio**: Http requests made easier.
-- ✨ **Shimmer**: For providing feedback to the user something is loading.
-- 📈 **Mrx Charts**: For displaying coin history on the coin detail page.
-- 🔒 **Flutter DotEnv**: Used for keeping secrets safe within the app.
-- 🖼️ **Cached Network Image**: Used for showing a loading indicator when images are being loaded over the network.
-- 🏗️ **Stacked Framework**: MVVM architecture.
-- 🐝 **Hive**: For local database
+- 🔷 Flutter - UI framework for cross-platform development
+- 🧩 Feature Slice Design - Architectural pattern for organizing code
+- 📦 Hive - Fast, lightweight local database for Flutter
+- 🔄 BLoC Pattern - State management solution
+- 📱 flutter_bloc - Implementation of the BLoC pattern
+- 🌐 HTTP - For API calls and data fetching
+- 🎨 Material Design - UI design language and component library
+- 🔍 Equatable - Simplifies equality comparisons in Dart
+- 💻 Build Runner - Code generation tool
+- 📊 Hive Generator - For generating Hive type adapters
+- 🎯 Dart - Programming language used for Flutter development
 
 ---
 
