@@ -1,17 +1,20 @@
-import 'package:carton_todo_app/features/todo/data/api_client.dart';
+import 'package:carton_todo_app/features/todo/data/todo_api_service.dart';
 import 'package:carton_todo_app/features/todo/model/todo.dart';
 import 'package:carton_todo_app/features/todo/model/todo_definition.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class TodoRepository {
-  final TodoApiClient _apiClient;
+  final TodoApiService _apiService;
   Box<Todo>? _todoBox;
   Box<TodoDefinition>? _definitionBox;
   bool _hasReachedMax = false;
   bool get hasReachedMax => _hasReachedMax;
+
+  // For testing purposes only
+  List<Todo>? _todosForTesting;
   
-  TodoRepository({TodoApiClient? apiClient}) 
-      : _apiClient = apiClient ?? TodoApiClient() {
+  TodoRepository({TodoApiService? apiService}) 
+      : _apiService = apiService ?? TodoApiService() {
     _initializeBoxes();
   }
   
@@ -38,7 +41,7 @@ class TodoRepository {
     if (page == 0 && !forceRefresh && _todoBox != null && _todoBox!.isNotEmpty) {
       // We have local data, return it immediately
       // and optionally refresh in the background
-      _refreshTodosInBackground();
+      _refreshTodosInBackground(page);
       return _todoBox!.values.toList();
     }
     
@@ -53,7 +56,7 @@ class TodoRepository {
         return [];
       }
       
-      final todos = await _apiClient.fetchTodos(page: page);
+      final todos = await _apiService.fetchTodos(page: page);
       
       // If we get fewer than expected records or empty list, we've reached the end
       if (todos.isEmpty || todos.length < 20) {
@@ -86,9 +89,9 @@ class TodoRepository {
   }
   
   // Optional method to refresh data in background without blocking UI
-  Future<void> _refreshTodosInBackground() async {
+  Future<void> _refreshTodosInBackground(int page) async {
     try {
-      final todos = await _apiClient.fetchTodos(page: 0);
+      final todos = await _apiService.fetchTodos(page: page);
       
       if (_todoBox != null) {
         await _todoBox!.clear();
@@ -111,7 +114,7 @@ class TodoRepository {
     }
     
     try {
-      final definitions = await _apiClient.fetchTodoDefinitions();
+      final definitions = await _apiService.fetchTodoDefinitions();
       
       // Save to Hive
       if (_definitionBox != null) {
@@ -136,7 +139,7 @@ class TodoRepository {
   // Optional method to refresh definitions in background without blocking UI
   Future<void> _refreshDefinitionsInBackground() async {
     try {
-      final definitions = await _apiClient.fetchTodoDefinitions();
+      final definitions = await _apiService.fetchTodoDefinitions();
       
       if (_definitionBox != null) {
         await _definitionBox!.clear();
@@ -157,11 +160,8 @@ class TodoRepository {
   }
 
   List<Todo> searchTodos(String query) {
-    if (_todoBox == null || _todoBox!.isEmpty) {
-      return [];
-    }
     
-    final List<Todo> allTodos = _todoBox!.values.toList();
+    final List<Todo> allTodos = _todosForTesting ?? (_todoBox != null ? _todoBox!.values.toList() : []);
     
     if (query.isEmpty) {
       return allTodos;
@@ -192,8 +192,8 @@ class TodoRepository {
     final actionKey = definition?.action ?? 'COMPLETE_TODO';
     
     try {
-      // Call the API
-      final success = await _apiClient.updateTodoStatus(todoId, actionKey);
+
+      final success = await _apiService.updateTodoStatus(todoId, actionKey);
       
       if (success && _todoBox != null) {
         // Update Hive with the updated todo
@@ -218,27 +218,6 @@ class TodoRepository {
       
       return success;
     } catch (e) {
-      // For demo purposes, let's still update locally even if API fails
-      if (_todoBox != null) {
-        final updatedTodo = Todo(
-          id: todo.id,
-          title: todo.title,
-          description: todo.description,
-          type: todo.type,
-          completed: !todo.completed,
-          dueDate: todo.dueDate,
-          startTime: todo.startTime,
-          finishTime: todo.finishTime,
-          phone: todo.phone,
-          url: todo.url,
-          location: todo.location,
-          createdAt: todo.createdAt,
-          updatedAt: DateTime.now(),
-        );
-        
-        await _todoBox!.put(todoId, updatedTodo);
-      }
-      
       throw Exception('Error updating todo: $e');
     }
   }
@@ -249,4 +228,10 @@ class TodoRepository {
     _definitionBox?.clear();
     _hasReachedMax = false;
   }
+
+  // This is only used for testing
+void setTodosForTesting(List<Todo> todos) {
+  // For testing only
+  _todosForTesting = todos;
+}
 }

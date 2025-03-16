@@ -7,6 +7,7 @@ import 'package:carton_todo_app/features/todo/model/todo.dart';
 import 'package:carton_todo_app/features/todo/model/todo_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
@@ -29,6 +30,9 @@ void main() async {
   // Open Hive boxes
   await Hive.openBox<Todo>('todos');
   await Hive.openBox<TodoDefinition>('todoDefinitions');
+
+  // await dotenv.load(fileName: '.env');
+  await dotenv.load();
   
   // Create repository
   final todoRepository = TodoRepository();

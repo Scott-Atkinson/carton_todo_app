@@ -71,4 +71,11 @@ This Flutter Todo application demonstrates a modern, modular approach to mobile 
    git clone https://github.com/Scott-Atkinson/coin_gecko
    run flutter clean
    run flutter pub get
-   run flutter run
+
+## Environment Setup
+
+This project uses environment variables for configuration. Follow these steps:
+
+1. Copy `.env.example` to a new file called `.env`
+2. Fill in your API key and other configuration values
+3. Run `flutter run`
