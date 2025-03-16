@@ -54,6 +54,7 @@ This Flutter Todo application demonstrates a modern, modular approach to mobile 
 - 🖌️ **1**: Introduce Theming.
 - 🎨 **2**: Implement UI Feedback to the User when a Save or Error has occured
 - 🧪 **3**: Make the tests more meaningful.
+- 🛠️ **4**: Fix deprecated warnings in the console.
 
 
 ---
