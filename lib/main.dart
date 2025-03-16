@@ -31,7 +31,7 @@ void main() async {
   await Hive.openBox<Todo>('todos');
   await Hive.openBox<TodoDefinition>('todoDefinitions');
 
-  // await dotenv.load(fileName: '.env');
+  // Load .env file
   await dotenv.load();
   
   // Create repository

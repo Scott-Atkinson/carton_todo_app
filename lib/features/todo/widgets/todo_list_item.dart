@@ -13,11 +13,11 @@ class TodoListItem extends StatelessWidget {
   final VoidCallback onTap;
 
   const TodoListItem({
-    Key? key,
+    super.key,
     required this.todo,
     this.definition,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
