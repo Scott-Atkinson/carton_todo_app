@@ -62,7 +62,6 @@ This Flutter Todo application demonstrates a modern, modular approach to mobile 
 ## 📦 Installation
 
 ### Prerequisites
-- Stacked CLI: `1.13.0` - https://stacked.filledstacks.com/docs/tooling/stacked-cli/
 - Flutter: `^3.7.2`
 - Dart: `3.5.3`
 
@@ -72,3 +71,4 @@ This Flutter Todo application demonstrates a modern, modular approach to mobile 
    git clone https://github.com/Scott-Atkinson/coin_gecko
    run flutter clean
    run flutter pub get
+   run flutter run
