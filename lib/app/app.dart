@@ -1,4 +1,6 @@
 
+import 'package:carton_todo_app/app/constants/app_text.dart';
+import 'package:carton_todo_app/features/todo/screens/todo_list_screen.dart';
 import 'package:flutter/material.dart';
 
 class TodoApp extends StatelessWidget {
@@ -7,13 +9,13 @@ class TodoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Todo App",
+      title: AppText.appTitle,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Center(
-        child: Text('hello to do app'),
+        child: TodoListScreen(),
       ),
     );
   }

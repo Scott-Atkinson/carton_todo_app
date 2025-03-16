@@ -1,21 +1,46 @@
 import 'package:carton_todo_app/app/app.dart';
+import 'package:carton_todo_app/core/app_bloc_observer.dart';
+import 'package:carton_todo_app/features/todo/bloc/todo_bloc.dart';
+import 'package:carton_todo_app/features/todo/bloc/todo_event.dart';
+import 'package:carton_todo_app/features/todo/data/todo_repository.dart';
+import 'package:carton_todo_app/features/todo/model/todo.dart';
+import 'package:carton_todo_app/features/todo/model/todo_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter ToDo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: TodoApp(),
-    );
+  // Set up Bloc observer for debugging
+  Bloc.observer = AppBlocObserver();
+  
+  // Initialize Hive
+  await Hive.initFlutter();
+  
+  // Register Hive adapters
+  if (!Hive.isAdapterRegistered(0)) {
+    Hive.registerAdapter(TodoAdapter());
   }
+  if (!Hive.isAdapterRegistered(1)) {
+    Hive.registerAdapter(TodoDefinitionAdapter());
+  }
+  
+  // Open Hive boxes
+  await Hive.openBox<Todo>('todos');
+  await Hive.openBox<TodoDefinition>('todoDefinitions');
+  
+  // Create repository
+  final todoRepository = TodoRepository();
+  
+  runApp(
+    BlocProvider<TodoBloc>(
+      create: (context) => TodoBloc(
+        repository: todoRepository,
+      )
+      ..add(FetchTodos())
+      ..add(FetchTodoDefinitions()),
+      child: TodoApp(),
+    ),
+  );
 }
